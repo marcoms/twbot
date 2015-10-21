@@ -10,14 +10,30 @@ import rethinkserver
 PORT = 8080
 SALT_ROUNDS = 14
 
+try:
+	conn = r.connect(db="twbot", port=rethinkserver.DRIVER_PORT)
+except r.errors.ReqlDriverError:
+	print("could not connect to rethinkdb server - please launch rethinkserver.py and try again")
+	sys.exit(1)
+
+TPL_VARS = {
+	"r": r,
+	"b": b,
+	"conn": conn,
+	"bc": bc,
+	"user": None,
+	"is_first_run": None,
+	"first_run_step": None,
+}
+
 def get_tpl_vars():
 	tpl_vars = TPL_VARS.copy()
 
 	results = list(r.table("twbot").run(conn))
 	if results:
-		is_first_run = results[0].get("is_first_run")
-
-	tpl_vars["is_first_run"] = is_first_run
+		data = results[0]
+		tpl_vars["is_first_run"] = data.get("is_first_run")
+		tpl_vars["first_run_step"] = data.get("first_run_step")
 
 	return tpl_vars
 
@@ -47,21 +63,6 @@ def init_db(reset=False):
 		r.table_create("users").run(conn)
 		print("done")
 
-try:
-	conn = r.connect(db="twbot", port=rethinkserver.DRIVER_PORT)
-except r.errors.ReqlDriverError:
-	print("could not connect to rethinkdb server - please launch rethinkserver.py and try again")
-	sys.exit(1)
-
-TPL_VARS = {
-	"r": r,
-	"b": b,
-	"conn": conn,
-	"bc": bc,
-	"user": None,
-	"is_first_run": None,
-}
-
 init_db()
 
 app = b.Bottle()
@@ -77,6 +78,10 @@ def index():
 
 @app.post("/register")
 def register():
+	# TODO: split these actions up into specific functions
+	if not get_tpl_vars()["is_first_run"] or get_tpl_vars()["first_run_step"] != 0:
+		return
+
 	username = b.request.POST.get("username")
 	password = b.request.POST.get("password")
 
@@ -85,6 +90,9 @@ def register():
 		"username": username,
 		"password": bc.hashpw(password.encode(), salt=bc.gensalt(SALT_ROUNDS)),
 	}).run(conn)
+
+	r.table("twbot").update({"first_run_step": 1}).run(conn)
+	b.redirect("/")
 
 # TODO: require admin authentication
 @app.get("/reset-db")

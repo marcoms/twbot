@@ -70,7 +70,12 @@ def static_file(filepath):
 
 @app.get("/")
 @b.view("index.tpl")
-def index_get():
+def index():
 	return get_tpl_vars()
+
+# TODO: require admin authentication
+@app.get("/reset-db")
+def reset_db():
+	init_db(reset=True)
 
 app.run(port=PORT, reloader=True, debug=True)

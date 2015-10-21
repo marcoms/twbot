@@ -3,8 +3,23 @@
 import sys
 import rethinkdb as r
 import bottle as b
+import bcrypt as bc
 
 import rethinkserver
+
+PORT = 8080
+
+TPL_VARS = {
+	"r": r,
+	"b": b,
+	"bc": bc,
+	"user": None,
+}
+
+def get_tpl_vars():
+	tpl_vars = TPL_VARS.copy()
+
+	return tpl_vars
 
 def init_db(reset=False):
 	if reset:
@@ -38,3 +53,16 @@ except r.errors.ReqlDriverError:
 	sys.exit(1)
 
 init_db()
+
+app = b.Bottle()
+
+@app.get("/static/<filepath:path>")
+def static_file(filepath):
+    return b.static_file(filepath, root="static")
+
+@app.get("/")
+@b.view("index.tpl")
+def index_get():
+	return get_tpl_vars()
+
+app.run(port=PORT, reloader=True, debug=True)

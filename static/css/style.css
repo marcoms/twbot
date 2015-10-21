@@ -1,0 +1,36 @@
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+.nav {
+	display: flex;
+	height: 48px;
+
+	align-items: center;
+}
+
+.nav__link,
+.nav__header {
+	padding: 0 8px;
+}
+
+.nav__link--current {
+	text-decoration: none;
+	color: #212121;
+
+	pointer-events: none;
+	cursor: default;
+}
+
+.nav__header {
+	font-size: 1.5em;
+}
+
+.content {
+	padding: 16px;
+}

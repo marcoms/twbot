@@ -4,8 +4,8 @@ import subprocess as sp
 import time
 import sys
 
-DRIVER_PORT = 8193
-ADMIN_PORT = 8194
+DRIVER_PORT = 8192
+ADMIN_PORT = 8193
 
 if __name__ == "__main__":
 	print("launching rethinkdb...")

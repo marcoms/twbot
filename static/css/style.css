@@ -5,6 +5,10 @@
 html, body {
 	margin: 0;
 	padding: 0;
+
+	height: 100%;
+
+	color: #212121;
 }
 
 .nav {
@@ -14,12 +18,11 @@ html, body {
 	align-items: center;
 }
 
-.nav__link,
-.nav__header {
+.nav > * {
 	padding: 0 8px;
 }
 
-.nav__link--current {
+.current-link {
 	text-decoration: none;
 	color: #212121;
 
@@ -27,10 +30,54 @@ html, body {
 	cursor: default;
 }
 
-.nav__header {
+.nav > header {
 	font-size: 1.5em;
 }
 
 .content {
 	padding: 16px;
+}
+
+.reg {
+	height: 100%;
+	overflow: auto;
+
+	text-align: center;
+}
+
+input[type="text"],
+input[type="username"],
+input[type="password"] {
+	outline: 0;
+	border: 2px solid #212121;
+
+	border-radius: 4px;
+	padding: 8px;
+	background: transparent;
+}
+
+input[type="submit"],
+button {
+	outline: 0;
+	border: 2px solid #212121;
+	border-radius: 4px;
+
+	padding: 8px 16px;
+
+	cursor: pointer;
+}
+
+input[type="submit"]:active,
+button:active {
+	background: #212121;
+	color: #fff;
+}
+
+.reg-label {
+	display: block;
+	margin: 16px 0;
+}
+
+.reg-submit {
+	margin: 16px 0;
 }

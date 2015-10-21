@@ -9,15 +9,14 @@ import rethinkserver
 
 PORT = 8080
 
-TPL_VARS = {
-	"r": r,
-	"b": b,
-	"bc": bc,
-	"user": None,
-}
-
 def get_tpl_vars():
 	tpl_vars = TPL_VARS.copy()
+
+	results = list(r.table("twbot").run(conn))
+	if results:
+		is_first_run = results[0].get("is_first_run")
+
+	tpl_vars["is_first_run"] = is_first_run
 
 	return tpl_vars
 
@@ -36,8 +35,8 @@ def init_db(reset=False):
 		print("creating twbot table... ", end="", flush=True)
 		r.table_create("twbot").run(conn)
 		r.table("twbot").insert({
-			"first_run": True,
-		})
+			"is_first_run": True,
+		}).run(conn)
 
 		print("done")
 
@@ -51,6 +50,15 @@ try:
 except r.errors.ReqlDriverError:
 	print("could not connect to rethinkdb server - please launch rethinkserver.py and try again")
 	sys.exit(1)
+
+TPL_VARS = {
+	"r": r,
+	"b": b,
+	"conn": conn,
+	"bc": bc,
+	"user": None,
+	"is_first_run": None,
+}
 
 init_db()
 

@@ -17,14 +17,24 @@
 	</head>
 
 	<body>
-		<nav class="nav">
-			<header class="nav__header">twbot</header>
+		<%
+			print("first run is " + str(is_first_run))
 
-			<a class="nav__link {{(title == "Home" and "nav__link--current") or ""}}" href="/">Home</a>
-		</nav>
+			if is_first_run:
+				include("first-run.tpl")
+			elif is_first_run == False:
+		%>
+				<nav class="nav">
+					<header>twbot</header>
 
-		<section class="content">
-			{{!base}}
-		</section>
+					<a class="{{(title == "Home" and "current-link") or ""}}" href="/">Home</a>
+				</nav>
+
+				<section class="content">
+					{{!base}}
+				</section>
+			% else:
+				<p>There is a problem with the database, please reset it and any twbot processes and try again.</p>
+			% end
 	</body>
 </html>

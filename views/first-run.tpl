@@ -4,9 +4,9 @@
 
 	<form action="/register" method="post">
 		<label class="reg-label" for="reg-username">Username:</label>
-		<input type="username" id="reg-username">
+		<input type="username" name="username" id="reg-username">
 		<label class="reg-label" for="reg-password">Password:</label>
-		<input type="password" id="reg-password">
+		<input type="password" name="password" id="reg-password">
 		<br>
 		<input class="reg-submit" type="submit" value="Register">
 	</form>

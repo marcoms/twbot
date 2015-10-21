@@ -8,6 +8,7 @@ import bcrypt as bc
 import rethinkserver
 
 PORT = 8080
+SALT_ROUNDS = 14
 
 def get_tpl_vars():
 	tpl_vars = TPL_VARS.copy()
@@ -36,6 +37,7 @@ def init_db(reset=False):
 		r.table_create("twbot").run(conn)
 		r.table("twbot").insert({
 			"is_first_run": True,
+			"first_run_step": 0,
 		}).run(conn)
 
 		print("done")
@@ -66,12 +68,23 @@ app = b.Bottle()
 
 @app.get("/static/<filepath:path>")
 def static_file(filepath):
-    return b.static_file(filepath, root="static")
+	return b.static_file(filepath, root="static")
 
 @app.get("/")
 @b.view("index.tpl")
 def index():
 	return get_tpl_vars()
+
+@app.post("/register")
+def register():
+	username = b.request.POST.get("username")
+	password = b.request.POST.get("password")
+
+	r.table("users").insert({
+		"admin": True,
+		"username": username,
+		"password": bc.hashpw(password.encode(), salt=bc.gensalt(SALT_ROUNDS)),
+	}).run(conn)
 
 # TODO: require admin authentication
 @app.get("/reset-db")

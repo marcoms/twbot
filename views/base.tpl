@@ -18,8 +18,6 @@
 
 	<body>
 		<%
-			print("first run is " + str(is_first_run))
-
 			if is_first_run:
 				include("first-run.tpl")
 			elif is_first_run == False:

@@ -81,3 +81,7 @@ button:active {
 .reg-submit {
 	margin: 16px 0;
 }
+
+.first-run-video {
+	width: 640px;
+}

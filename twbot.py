@@ -98,5 +98,6 @@ def register():
 @app.get("/reset-db")
 def reset_db():
 	init_db(reset=True)
+	b.redirect("/")
 
 app.run(port=PORT, reloader=True, debug=True)

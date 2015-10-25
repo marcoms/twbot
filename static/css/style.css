@@ -83,5 +83,11 @@ button:active {
 }
 
 .first-run-video {
-	width: 640px;
+	width: 100%;
+}
+
+@media (min-width: 800px) {
+	.first-run-video {
+		width: 800px;
+	}
 }

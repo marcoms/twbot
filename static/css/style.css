@@ -82,16 +82,6 @@ button:active {
 	margin: 16px 0;
 }
 
-.first-run video {
-	width: 100%;
-}
-
-@media (min-width: 800px) {
-	.first-run video {
-		width: 800px;
-	}
-}
-
 .first-run ul {
 	width: 100%;
 

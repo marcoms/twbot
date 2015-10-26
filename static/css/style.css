@@ -82,12 +82,29 @@ button:active {
 	margin: 16px 0;
 }
 
-.first-run-video {
+.first-run video {
 	width: 100%;
 }
 
 @media (min-width: 800px) {
-	.first-run-video {
+	.first-run video {
 		width: 800px;
 	}
+}
+
+.first-run ul {
+	width: 100%;
+
+	text-align: left;
+}
+
+@media (min-width: 480px) {
+	.first-run ul {
+		width: 480px;
+		margin: 0 auto;
+	}
+}
+
+.first-run li {
+	margin: 16px 0;
 }

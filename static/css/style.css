@@ -8,23 +8,39 @@ html, body {
 
 	height: 100%;
 
-	color: #212121;
+	color: #424242;
 }
 
 .nav {
 	display: flex;
 	height: 48px;
 
+	background: #eee;
 	align-items: center;
 }
 
-.nav > * {
-	padding: 0 8px;
+.nav > header {
+	padding: 0 16px;
 }
 
-.current-link {
+.nav > a {
+	height: 100%;
+
+	padding: 0 16px;
+	line-height: 48px;
+
+	color: inherit;
 	text-decoration: none;
-	color: #212121;
+}
+
+.nav > a:hover {
+	background: #ddd;
+}
+
+.nav > .current-link {
+	text-decoration: none;
+	color: #eee;
+	background: #424242;
 
 	pointer-events: none;
 	cursor: default;

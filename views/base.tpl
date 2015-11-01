@@ -26,6 +26,7 @@
 					<header>twbot</header>
 
 					<a class="{{(title == "Home" and "current-link") or ""}}" href="/">Home</a>
+					<a class="{{(title == "About" and "current-link") or ""}}" href="/about">About</a>
 				</nav>
 
 				<section class="content">

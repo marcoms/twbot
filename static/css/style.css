@@ -50,6 +50,10 @@ html, body {
 	font-size: 1.5em;
 }
 
+.flex-spacer {
+	flex: 1;
+}
+
 .content {
 	padding: 16px;
 }
@@ -71,8 +75,10 @@ html, body {
 input[type="text"],
 input[type="username"],
 input[type="password"] {
+	display: block;
+
 	outline: 0;
-	border: 2px solid #212121;
+	border: 2px solid #424242;
 
 	border-radius: 4px;
 	padding: 8px;
@@ -81,29 +87,32 @@ input[type="password"] {
 
 input[type="submit"],
 button {
+	display: block;
+	margin: 16px 0;
+
 	outline: 0;
-	border: 2px solid #212121;
+	border: 2px solid #424242;
 	border-radius: 4px;
 
 	padding: 8px 16px;
 	background: #fff;
+	font: inherit;
 
 	cursor: pointer;
 }
 
 input[type="submit"]:active,
 button:active {
-	background: #212121;
+	background: #424242;
 	color: #fff;
 }
 
-.first-run label {
+label {
 	display: block;
 	margin: 16px 0;
 }
 
 .first-run input[type="submit"] {
-	display: block;
 	margin: 16px auto;
 }
 

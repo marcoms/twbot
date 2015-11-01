@@ -50,7 +50,7 @@
 			<input type="submit">
 		</form>
 	% elif first_run_step == 2:
-		<h3>Go to <a target="twbot-twitter" title="Authorization URL" href="{{authorization_url}}">{{authorization_url}}</a></h3>
+		<h3>Go to <a target="twbot-twitter" title="Authorization URL" href="{{auth_url}}">{{auth_url}}</a></h3>
 
 		<p>Enter the PIN you are given below</p>
 

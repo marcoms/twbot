@@ -5,6 +5,7 @@ import rethinkdb as r
 import bottle as b
 import bcrypt as bc
 import tweepy as t
+import pickle
 from urllib.parse import urlencode
 
 import rethinkserver
@@ -113,9 +114,9 @@ def register_tokens():
 	api_key = b.request.POST.get("api-key")
 	api_secret = b.request.POST.get("api-secret")
 
-	twitter_auth = t.OAuthHandler(api_key, api_secret)
+	auth = t.OAuthHandler(api_key, api_secret)
 	try:
-		auth_url = twitter_auth.get_authorization_url()
+		auth_url = auth.get_authorization_url()
 	except t.TweepError:
 		print("failed to get autorization url")
 		b.redirect("/?" + urlencode({"message": "One or more of these fields were incorrect"}))
@@ -125,9 +126,29 @@ def register_tokens():
 		"first_run_step": 2,
 		"api_key": api_key,
 		"api_secret": api_secret,
-		"authorization_url": auth_url,
+		"auth": pickle.dumps(auth),
+		"auth_url": auth_url,
 	}).run(conn)
 
+	b.redirect("/")
+
+@app.post("/register-pin")
+def register_pin():
+	meta = get_twbot_meta()
+	if not meta["is_first_run"] or meta["first_run_step"] != 2:
+		return
+
+	pin = b.request.POST.get("pin")
+
+	auth = pickle.loads(meta["auth"])
+	access_key, access_secret = auth.get_access_token(pin)
+	r.table("meta").update({
+		"access_key": access_key,
+		"access_secret": access_secret,
+		"is_first_run": False,
+	}).run(conn)
+
+	r.table("meta").replace(r.row.without(["auth", "auth_url", "first_run_step"])).run(conn)
 	b.redirect("/")
 
 # TODO: require admin authentication

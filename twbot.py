@@ -7,7 +7,7 @@ import bcrypt as bc
 
 import rethinkserver
 
-PORT = 8080
+PORT = 8192
 SALT_ROUNDS = 14
 
 try:

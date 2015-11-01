@@ -22,18 +22,27 @@ TPL_VARS = {
 	"conn": conn,
 	"bc": bc,
 	"user": None,
-	"is_first_run": None,
-	"first_run_step": None,
 }
+
+def get_twbot_meta():
+	results = list(r.table("meta").run(conn))
+	if results:
+		return results[0]
+	else:
+		raise RuntimeError("the twbot database is incorrectly structured")
 
 def get_tpl_vars():
 	tpl_vars = TPL_VARS.copy()
+	meta = get_twbot_meta()
 
-	results = list(r.table("twbot").run(conn))
-	if results:
-		data = results[0]
-		tpl_vars["is_first_run"] = data.get("is_first_run")
-		tpl_vars["first_run_step"] = data.get("first_run_step")
+	# remove non-relevant data for templates
+
+	meta.pop("id")
+	meta.pop("admin_username")
+	meta.pop("admin_password")
+
+	# combine the two dicts
+	tpl_vars = {**tpl_vars, **meta}
 
 	return tpl_vars
 
@@ -48,10 +57,10 @@ def init_db(reset=False):
 		r.db_create("twbot").run(conn)
 		print("done")
 
-	if "twbot" not in r.table_list().run(conn):
-		print("creating twbot table... ", end="", flush=True)
-		r.table_create("twbot").run(conn)
-		r.table("twbot").insert({
+	if "meta" not in r.table_list().run(conn):
+		print("creating meta table... ", end="", flush=True)
+		r.table_create("meta").run(conn)
+		r.table("meta").insert({
 			"is_first_run": True,
 			"first_run_step": 0,
 		}).run(conn)
@@ -78,20 +87,19 @@ def index():
 
 @app.post("/register")
 def register():
-	# TODO: split these actions up into specific functions
-	if not get_tpl_vars()["is_first_run"] or get_tpl_vars()["first_run_step"] != 0:
+	meta = get_twbot_meta()
+	if not meta["is_first_run"] or meta["first_run_step"] != 0:
 		return
 
 	username = b.request.POST.get("username")
 	password = b.request.POST.get("password")
 
-	r.table("users").insert({
-		"admin": True,
-		"username": username,
-		"password": bc.hashpw(password.encode(), salt=bc.gensalt(SALT_ROUNDS)),
+	r.table("meta").limit(1).update({
+		"admin_username": username,
+		"admin_password": bc.hashpw(password.encode(), salt=bc.gensalt(SALT_ROUNDS)),
 	}).run(conn)
 
-	r.table("twbot").update({"first_run_step": 1}).run(conn)
+	r.table("meta").update({"first_run_step": 1}).run(conn)
 	b.redirect("/")
 
 # TODO: require admin authentication

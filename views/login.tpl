@@ -8,8 +8,8 @@
 
 <form id="form-login" action="/login" method="post" autocomplete="off">
 	<label for="login-username">Username:</label>
-	<input name="username" id="login-username" type="username">
+	<input name="username" id="login-username" type="username" required>
 	<label for="login-password">Password:</label>
-	<input name="password" id="login-password" type="password">
+	<input name="password" id="login-password" type="password" required>
 	<input type="submit">
 </form>

@@ -5,9 +5,9 @@
 
 		<form id="form-register" action="/register" method="post" autocomplete="off">
 			<label for="reg-username">Username:</label>
-			<input type="username" name="username" id="reg-username">
+			<input type="username" name="username" id="reg-username" required>
 			<label for="reg-password">Password:</label>
-			<input type="password" name="password" id="reg-password">
+			<input type="password" name="password" id="reg-password" required>
 			<input type="submit" value="Register">
 		</form>
 	% elif first_run_step == 1:
@@ -44,9 +44,9 @@
 
 		<form id="form-register-tokens" action="/register-tokens" method="post" autocomplete="off">
 			<label for="reg-tokens-key">Consumer Key:</label>
-			<input name="api-key" id="reg-tokens-key" type="text">
+			<input name="api-key" id="reg-tokens-key" type="text" required>
 			<label for="reg-tokens-secret">Consumer Secret:</label>
-			<input name="api-secret" id="reg-tokens-secret" type="password">
+			<input name="api-secret" id="reg-tokens-secret" type="password" required>
 			<input type="submit">
 		</form>
 	% elif first_run_step == 2:

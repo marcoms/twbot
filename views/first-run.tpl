@@ -3,13 +3,12 @@
 	% if first_run_step == 0:
 		<h2>Set up your account</h2>
 
-		<form action="/register" method="post">
-			<label class="reg-label" for="reg-username">Username:</label>
+		<form id="form-register" action="/register" method="post" autocomplete="off">
+			<label for="reg-username">Username:</label>
 			<input type="username" name="username" id="reg-username">
-			<label class="reg-label" for="reg-password">Password:</label>
+			<label for="reg-password">Password:</label>
 			<input type="password" name="password" id="reg-password">
-			<br>
-			<input class="reg-submit" type="submit" value="Register">
+			<input type="submit" value="Register">
 		</form>
 	% elif first_run_step == 1:
 		<h2>Connect to Twitter</h2>
@@ -22,11 +21,27 @@
 		</ul>
 
 		<h3>Create the Twitter app</h3>
-		<h4>Go to <a target="twbot-twitter" title="Create Twitter app" href="https://apps.twitter.com/">apps.twitter.com</a></h4>
+		<h4>Go to <a target="twbot-twitter" title="Create Twitter app" href="https://apps.twitter.com">apps.twitter.com</a></h4>
 		<ul>
 			<li>By creating a Twitter application, twbot will be able to access a Twitter account and run properly</li>
 			<li>When entering the application name, enter &lsquo;twbot&rsquo; prefixed by the current Twitter account so as to prevent name clashes with other twbot users (e.g. &lsquo;@Linus__Torvalds twbot&rsquo; for user @Linus__Torvalds)</li>
 			<li>You must fill the description and website fields to proceed, however twbot ignores these fields</li>
 		</ul>
+
+		<h3>Enter your app details</h3>
+		<h4>Go to <a target="twbot-twitter" title="Retrieve your app details" href="https://apps.twitter.com">apps.twitter.com</a></h4>
+		<ol>
+			<li>Select your newly created app</li>
+			<li>Open the &lsquo;Keys and Access Tokens&rsquo; tab</li>
+			<li>Enter your consumer key and secret below</li>
+		</ol>
+
+		<form id="form-register-tokens" action="/register-tokens" method="post" autocomplete="off">
+			<label for="reg-tokens-key">Consumer Key:</label>
+			<input name="api-key" id="reg-tokens-key" type="text">
+			<label for="reg-tokens-secret">Consumer Secret:</label>
+			<input name="api-secret" id="reg-tokens-secret" type="password">
+			<input type="submit">
+		</form>
 	% end
 </div>

@@ -4,6 +4,8 @@ import sys
 import rethinkdb as r
 import bottle as b
 import bcrypt as bc
+import tweepy as t
+from urllib.parse import urlencode
 
 import rethinkserver
 
@@ -38,8 +40,8 @@ def get_tpl_vars():
 	# remove non-relevant data for templates
 
 	meta.pop("id")
-	meta.pop("admin_username")
-	meta.pop("admin_password")
+	meta.pop("admin_username", None)
+	meta.pop("admin_password", None)
 
 	# combine the two dicts
 	tpl_vars = {**tpl_vars, **meta}
@@ -94,12 +96,38 @@ def register():
 	username = b.request.POST.get("username")
 	password = b.request.POST.get("password")
 
-	r.table("meta").limit(1).update({
+	r.table("meta").update({
 		"admin_username": username,
 		"admin_password": bc.hashpw(password.encode(), salt=bc.gensalt(SALT_ROUNDS)),
 	}).run(conn)
 
 	r.table("meta").update({"first_run_step": 1}).run(conn)
+	b.redirect("/")
+
+@app.post("/register-tokens")
+def register_tokens():
+	meta = get_twbot_meta()
+	if not meta["is_first_run"] or meta["first_run_step"] != 1:
+		return
+
+	api_key = b.request.POST.get("api-key")
+	api_secret = b.request.POST.get("api-secret")
+
+	twitter_auth = t.OAuthHandler(api_key, api_secret)
+	try:
+		auth_url = twitter_auth.get_authorization_url()
+	except t.TweepError:
+		print("failed to get autorization url")
+		b.redirect("/?" + urlencode({"message": "One or more of these fields were incorrect"}))
+		return
+
+	r.table("meta").update({
+		"first_run_step": 2,
+		"api_key": api_key,
+		"api_secret": api_secret,
+		"authorization_url": auth_url,
+	}).run(conn)
+
 	b.redirect("/")
 
 # TODO: require admin authentication

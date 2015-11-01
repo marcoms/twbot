@@ -63,6 +63,7 @@ button {
 	border-radius: 4px;
 
 	padding: 8px 16px;
+	background: #fff;
 
 	cursor: pointer;
 }
@@ -73,23 +74,26 @@ button:active {
 	color: #fff;
 }
 
-.reg-label {
+.first-run label {
 	display: block;
 	margin: 16px 0;
 }
 
-.reg-submit {
-	margin: 16px 0;
+.first-run input[type="submit"] {
+	display: block;
+	margin: 16px auto;
 }
 
-.first-run ul {
+.first-run ul,
+.first-run ol {
 	width: 100%;
 
 	text-align: left;
 }
 
 @media (min-width: 480px) {
-	.first-run ul {
+	.first-run ul,
+	.first-run ol {
 		width: 480px;
 		margin: 0 auto;
 	}

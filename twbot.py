@@ -3,10 +3,11 @@
 import sys
 import rethinkdb as r
 import bottle as b
-import bcrypt as bc
 import tweepy as t
+import bcrypt
 import pickle
 from urllib.parse import urlencode
+from uuid import uuid4 as uuid
 
 import rethinkserver
 
@@ -23,8 +24,6 @@ TPL_VARS = {
 	"r": r,
 	"b": b,
 	"conn": conn,
-	"bc": bc,
-	"user": None,
 }
 
 def get_twbot_meta():
@@ -34,6 +33,9 @@ def get_twbot_meta():
 	else:
 		raise RuntimeError("the twbot database is incorrectly structured")
 
+def get_is_logged_in():
+	return list(r.table("meta").run(conn))[0].get("session") == b.request.get_cookie("session")
+
 def get_tpl_vars():
 	tpl_vars = TPL_VARS.copy()
 	meta = get_twbot_meta()
@@ -41,13 +43,22 @@ def get_tpl_vars():
 	# remove non-relevant data for templates
 
 	meta.pop("id")
-	meta.pop("admin_username", None)
 	meta.pop("admin_password", None)
 
 	# combine the two dicts
 	tpl_vars = {**tpl_vars, **meta}
 
+	tpl_vars["is_logged_in"] = get_is_logged_in()
+
 	return tpl_vars
+
+def password_match(password, hashed):
+	if isinstance(password, str):
+		password = password.encode()
+	elif not isinstance(password, bytes):
+		raise RuntimeError("password must be either str or bytes")
+
+	return bcrypt.hashpw(password, hashed) == hashed
 
 def init_db(reset=False):
 	if reset:
@@ -99,7 +110,7 @@ def register():
 
 	r.table("meta").update({
 		"admin_username": username,
-		"admin_password": bc.hashpw(password.encode(), salt=bc.gensalt(SALT_ROUNDS)),
+		"admin_password": bcrypt.hashpw(password.encode(), salt=bcrypt.gensalt(SALT_ROUNDS)),
 	}).run(conn)
 
 	r.table("meta").update({"first_run_step": 1}).run(conn)
@@ -150,6 +161,31 @@ def register_pin():
 
 	r.table("meta").replace(r.row.without(["auth", "auth_url", "first_run_step"])).run(conn)
 	b.redirect("/")
+
+@app.get("/login")
+@b.view("login.tpl")
+def login():
+	return get_tpl_vars()
+
+@app.post("/login")
+def login_post():
+	username = b.request.POST.get("username")
+	password = b.request.POST.get("password")
+	meta = get_twbot_meta()
+
+	valid = True
+	if username == meta["admin_username"]:
+		if not password_match(password, meta["admin_password"]):
+			valid = False
+	else:
+		valid = False
+
+	if valid:
+		session = str(uuid())
+		b.response.set_cookie("session", session, httponly=True)
+		r.table("meta").update({"session": session}).run(conn)
+	else:
+		b.redirect("/login?" + urlencode({"message": "Incorrect login"}))
 
 # TODO: require admin authentication
 @app.get("/reset-db")

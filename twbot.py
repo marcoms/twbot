@@ -34,7 +34,13 @@ def get_twbot_meta():
 		raise RuntimeError("the twbot database is incorrectly structured")
 
 def get_is_logged_in():
-	return list(r.table("meta").run(conn))[0].get("session") == b.request.get_cookie("session")
+	session = get_twbot_meta().get("session")
+	cookie_session = b.request.get_cookie("session")
+
+	if None in (session, cookie_session):
+		return False
+
+	return session == cookie_session
 
 def get_tpl_vars():
 	tpl_vars = TPL_VARS.copy()
@@ -184,8 +190,24 @@ def login_post():
 		session = str(uuid())
 		b.response.set_cookie("session", session, httponly=True)
 		r.table("meta").update({"session": session}).run(conn)
+		b.redirect("/")
 	else:
 		b.redirect("/login?" + urlencode({"message": "Incorrect login"}))
+
+@app.get("/admin")
+@b.view("admin.tpl")
+def admin():
+	return get_tpl_vars()
+
+@app.post("/logout")
+def logout():
+	if not get_is_logged_in():
+		b.redirect("/")
+		return
+
+	b.response.delete_cookie("session")
+	r.table("meta").replace(r.row.without("session")).run(conn)
+	b.redirect("/")
 
 # TODO: require admin authentication
 @app.get("/reset-db")

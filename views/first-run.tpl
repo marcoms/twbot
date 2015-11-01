@@ -49,5 +49,15 @@
 			<input name="api-secret" id="reg-tokens-secret" type="password">
 			<input type="submit">
 		</form>
+	% elif first_run_step == 2:
+		<h3>Go to <a target="twbot-twitter" title="Authorization URL" href="{{authorization_url}}">{{authorization_url}}</a></h3>
+
+		<p>Enter the PIN you are given below</p>
+
+		<form id="form-register-pin" action="/register-pin" method="post" autocomplete="off">
+			<label for="reg-pin">PIN:</label>
+			<input name="pin" type="password" inputmode="numeric" maxlength="7" required>
+			<input type="submit">
+		</form>
 	% end
 </div>

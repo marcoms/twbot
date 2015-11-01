@@ -13,6 +13,10 @@ import rethinkserver
 
 PORT = 8192
 SALT_ROUNDS = 14
+META_DEFAULTS = {
+	"is_first_run": True,
+	"first_run_step": 0,
+}
 
 try:
 	conn = r.connect(db="twbot", port=rethinkserver.DRIVER_PORT)
@@ -68,9 +72,17 @@ def password_match(password, hashed):
 
 def init_db(reset=False):
 	if reset:
-		print("dropping twbot db... ", end="", flush=True)
-		r.db_drop("twbot").run(conn)
-		print("done")
+		if "twbot" in r.db_list().run(conn):
+			if "meta" in r.table_list().run(conn):
+				print("resetting meta table... ", end="", flush=True)
+				r.table("meta").delete().run(conn)
+				r.table("meta").insert(META_DEFAULTS).run(conn)
+				print("done")
+
+			if "users" in r.table_list().run(conn):
+				print("resetting users table... ", end="", flush=True)
+				r.table("users").delete().run(conn)
+				print("done")
 
 	if "twbot" not in r.db_list().run(conn):
 		print("creating twbot db... ", end="", flush=True)
@@ -80,10 +92,7 @@ def init_db(reset=False):
 	if "meta" not in r.table_list().run(conn):
 		print("creating meta table... ", end="", flush=True)
 		r.table_create("meta").run(conn)
-		r.table("meta").insert({
-			"is_first_run": True,
-			"first_run_step": 0,
-		}).run(conn)
+		r.table("meta").insert(META_DEFAULTS).run(conn)
 
 		print("done")
 

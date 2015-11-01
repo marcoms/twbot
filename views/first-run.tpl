@@ -36,6 +36,12 @@
 			<li>Enter your consumer key and secret below</li>
 		</ol>
 
+		% if b.request.GET.get("message"):
+			<div class="form-warning">
+				<strong>{{b.request.GET.get("message")}}</strong>
+			</div>
+		% end
+
 		<form id="form-register-tokens" action="/register-tokens" method="post" autocomplete="off">
 			<label for="reg-tokens-key">Consumer Key:</label>
 			<input name="api-key" id="reg-tokens-key" type="text">

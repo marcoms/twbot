@@ -114,6 +114,12 @@ def register():
 	username = b.request.POST.get("username")
 	password = b.request.POST.get("password")
 
+	if not username or not password:
+		b.redirect("/?" + urlencode({"message": "Enter both a username and password"}))
+		return
+	elif len(password) < 5:
+		b.redirect("/?" + urlencode({"message": "Password must be at least five characters"}))
+
 	r.table("meta").update({
 		"admin_username": username,
 		"admin_password": bcrypt.hashpw(password.encode(), salt=bcrypt.gensalt(SALT_ROUNDS)),

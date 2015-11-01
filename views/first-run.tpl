@@ -3,6 +3,12 @@
 	% if first_run_step == 0:
 		<h2>Set up your account</h2>
 
+		% if b.request.GET.get("message"):
+			<div class="form-warning">
+				<strong>{{b.request.GET.get("message")}}</strong>
+			</div>
+		% end
+
 		<form id="form-register" action="/register" method="post" autocomplete="off">
 			<label for="reg-username">Username:</label>
 			<input type="username" name="username" id="reg-username" required>

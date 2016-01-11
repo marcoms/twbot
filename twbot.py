@@ -4,31 +4,15 @@ import sys
 import rethinkdb as r
 import bottle as b
 import tweepy as t
+import time
 import bcrypt
 import pickle
 from urllib.parse import urlencode
 from uuid import uuid4 as uuid
 
-import rethinkserver
-
-PORT = 8192
-SALT_ROUNDS = 14
-META_DEFAULTS = {
-	"is_first_run": True,
-	"first_run_step": 0,
-}
-
-try:
-	conn = r.connect(db="twbot", port=rethinkserver.DRIVER_PORT)
-except r.errors.ReqlDriverError:
-	print("could not connect to rethinkdb server - please launch rethinkserver.py and try again")
+if __name__ != "__main__":
+	print("this is not a library")
 	sys.exit(1)
-
-TPL_VARS = {
-	"r": r,
-	"b": b,
-	"conn": conn,
-}
 
 
 def get_twbot_meta():
@@ -72,6 +56,7 @@ def password_match(password, hashed):
 	elif not isinstance(password, bytes):
 		raise RuntimeError("password must be either str or bytes")
 
+	# bcrypt uses built-in salts, so using the hashed password as the salt parameter should yield the same hashed password if they match
 	return bcrypt.hashpw(password, hashed) == hashed
 
 
@@ -106,6 +91,41 @@ def init_db(reset=False):
 		r.table_create("users").run(conn)
 		print("done")
 
+# various constants to be used later
+
+TWBOT_PORT = 8080
+RETHINK_ADMIN_PORT = 8081
+RETHINK_DRIVER_PORT = 8082
+RETHINK_MAX_CONNECT_RETRIES = 8
+SALT_ROUNDS = 14
+META_DEFAULTS = {
+	"is_first_run": True,
+	"first_run_step": 0,
+}
+
+for i in range(RETHINK_MAX_CONNECT_RETRIES):
+	# keep trying to connect to database
+
+	try:
+		conn = r.connect(db="twbot", port=RETHINK_DRIVER_PORT)
+	except r.errors.ReqlDriverError:
+		if i == RETHINK_MAX_CONNECT_RETRIES - 1:
+			# give up on last try
+
+			print("could not connect to rethinkdb server")
+			sys.exit(1)
+
+		time.sleep(1)
+	else:
+		# connected successfully
+		break
+
+TPL_VARS = {
+	"r": r,
+	"b": b,
+	"conn": conn,
+}
+
 init_db()
 
 app = b.Bottle()
@@ -113,6 +133,8 @@ app = b.Bottle()
 
 @app.get("/static/<filepath:path>")
 def static_file(filepath):
+	# correctly handle static file requests
+
 	return b.static_file(filepath, root="static")
 
 
@@ -131,12 +153,14 @@ def register():
 	username = b.request.POST.get("username")
 	password = b.request.POST.get("password")
 
+	# form validation
+
 	if not username or not password:
 		b.redirect("/?" + urlencode({"message": "Enter both a username and password"}))
-		return
 	elif len(password) < 5:
 		b.redirect("/?" + urlencode({"message": "Password must be at least five characters"}))
 
+	# commit admin details
 	r.table("meta").update({
 		"admin_username": username,
 		"admin_password": bcrypt.hashpw(password.encode(), salt=bcrypt.gensalt(SALT_ROUNDS)),
@@ -167,7 +191,10 @@ def register_tokens():
 		"first_run_step": 2,
 		"api_key": api_key,
 		"api_secret": api_secret,
+
+		# the authorisation session is stored in the instance so we have to serialise it to the database for future availabliity
 		"auth": pickle.dumps(auth),
+
 		"auth_url": auth_url,
 	}).run(conn)
 
@@ -245,4 +272,4 @@ def reset_db():
 	init_db(reset=True)
 	b.redirect("/")
 
-app.run(port=PORT, reloader=True, debug=True)
+app.run(port=TWBOT_PORT, reloader=True, debug=True)

@@ -59,7 +59,7 @@ def get_tpl_vars():
 	meta.pop("admin_password", None)
 
 	# combine the two dicts
-	tpl_vars = {**tpl_vars, **meta}
+	tpl_vars.update(meta)
 
 	tpl_vars["is_logged_in"] = get_is_logged_in()
 

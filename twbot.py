@@ -30,12 +30,14 @@ TPL_VARS = {
 	"conn": conn,
 }
 
+
 def get_twbot_meta():
 	results = list(r.table("meta").run(conn))
 	if results:
 		return results[0]
 	else:
 		raise RuntimeError("the twbot database is incorrectly structured")
+
 
 def get_is_logged_in():
 	session = get_twbot_meta().get("session")
@@ -45,6 +47,7 @@ def get_is_logged_in():
 		return False
 
 	return session == cookie_session
+
 
 def get_tpl_vars():
 	tpl_vars = TPL_VARS.copy()
@@ -62,6 +65,7 @@ def get_tpl_vars():
 
 	return tpl_vars
 
+
 def password_match(password, hashed):
 	if isinstance(password, str):
 		password = password.encode()
@@ -69,6 +73,7 @@ def password_match(password, hashed):
 		raise RuntimeError("password must be either str or bytes")
 
 	return bcrypt.hashpw(password, hashed) == hashed
+
 
 def init_db(reset=False):
 	if reset:
@@ -105,14 +110,17 @@ init_db()
 
 app = b.Bottle()
 
+
 @app.get("/static/<filepath:path>")
 def static_file(filepath):
 	return b.static_file(filepath, root="static")
+
 
 @app.get("/")
 @b.view("index.tpl")
 def index():
 	return get_tpl_vars()
+
 
 @app.post("/register")
 def register():
@@ -136,6 +144,7 @@ def register():
 
 	r.table("meta").update({"first_run_step": 1}).run(conn)
 	b.redirect("/")
+
 
 @app.post("/register-tokens")
 def register_tokens():
@@ -164,6 +173,7 @@ def register_tokens():
 
 	b.redirect("/")
 
+
 @app.post("/register-pin")
 def register_pin():
 	meta = get_twbot_meta()
@@ -183,10 +193,12 @@ def register_pin():
 	r.table("meta").replace(r.row.without(["auth", "auth_url", "first_run_step"])).run(conn)
 	b.redirect("/")
 
+
 @app.get("/login")
 @b.view("login.tpl")
 def login():
 	return get_tpl_vars()
+
 
 @app.post("/login")
 def login_post():
@@ -209,10 +221,12 @@ def login_post():
 	else:
 		b.redirect("/login?" + urlencode({"message": "Incorrect login"}))
 
+
 @app.get("/admin")
 @b.view("admin.tpl")
 def admin():
 	return get_tpl_vars()
+
 
 @app.post("/logout")
 def logout():
@@ -223,6 +237,7 @@ def logout():
 	b.response.delete_cookie("session")
 	r.table("meta").replace(r.row.without("session")).run(conn)
 	b.redirect("/")
+
 
 # TODO: require admin authentication
 @app.get("/reset-db")

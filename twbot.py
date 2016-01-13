@@ -5,7 +5,6 @@ try:
 	import rethinkdb as r
 	import bottle as b
 	import tweepy as t
-	import time
 	import bcrypt
 	import pickle
 	from urllib.parse import urlencode
@@ -97,32 +96,23 @@ def init_db(reset=False):
 
 # various constants to be used later
 
-TWBOT_PORT = 8080
-RETHINK_ADMIN_PORT = 8081
-RETHINK_DRIVER_PORT = 8082
-RETHINK_MAX_CONNECT_RETRIES = 8
 SALT_ROUNDS = 14
 META_DEFAULTS = {
 	"is_first_run": True,
 	"first_run_step": 0,
 }
 
-for i in range(RETHINK_MAX_CONNECT_RETRIES):
-	# keep trying to connect to database
+twbot_port = sys.argv[1] if len(sys.argv) > 1 else 8080
+rethink_driver_port = sys.argv[2] if len(sys.argv) > 2 else None
 
-	try:
-		conn = r.connect(db="twbot", port=RETHINK_DRIVER_PORT)
-	except r.errors.ReqlDriverError:
-		if i == RETHINK_MAX_CONNECT_RETRIES - 1:
-			# give up on last try
-
-			print("could not connect to rethinkdb server")
-			sys.exit(1)
-
-		time.sleep(1)
+try:
+	if rethink_driver_port:
+		conn = r.connect(db="twbot", port=rethink_driver_port)
 	else:
-		# connected successfully
-		break
+		conn = r.connect(db="twbot")
+except r.errors.ReqlDriverError:
+	print("could not connect to rethinkdb server")
+	sys.exit(1)
 
 TPL_VARS = {
 	"r": r,
@@ -236,6 +226,7 @@ def finish_setup():
 
 	b.redirect("/")
 
+
 @app.get("/login")
 @b.view("login.tpl")
 def login():
@@ -287,4 +278,4 @@ def reset_db():
 	init_db(reset=True)
 	b.redirect("/")
 
-app.run(port=TWBOT_PORT, reloader=True, debug=True)
+app.run(port=twbot_port, reloader=True, debug=True)

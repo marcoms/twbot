@@ -14,7 +14,7 @@
 			<input type="username" name="username" id="reg-username" required>
 			<label for="reg-password">Password:</label>
 			<input type="password" name="password" id="reg-password" required>
-			<input type="submit" value="Register">
+			<input type="submit" value="Next">
 		</form>
 	% elif first_run_step == 1:
 		<h2>Connect to Twitter</h2>
@@ -53,7 +53,7 @@
 			<input name="api-key" id="reg-tokens-key" type="text" required>
 			<label for="reg-tokens-secret">Consumer Secret:</label>
 			<input name="api-secret" id="reg-tokens-secret" type="password" required>
-			<input type="submit">
+			<input type="submit" value="Next">
 		</form>
 	% elif first_run_step == 2:
 		<h3>Go to <a target="twbot-twitter" title="Authorization URL" href="{{auth_url}}">{{auth_url}}</a></h3>
@@ -63,7 +63,7 @@
 		<form id="form-register-pin" action="/register-pin" method="post" autocomplete="off">
 			<label for="reg-pin">PIN:</label>
 			<input name="pin" type="password" inputmode="numeric" maxlength="7" required>
-			<input type="submit">
+			<input type="submit" value="Next">
 		</form>
 	% elif first_run_step == 3:
 		<h3>Congratulations, you have set up twbot!</h3>

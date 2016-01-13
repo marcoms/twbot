@@ -214,12 +214,23 @@ def register_pin():
 	r.table("meta").update({
 		"access_key": access_key,
 		"access_secret": access_secret,
-		"is_first_run": False,
+		"first_run_step": 3,
 	}).run(conn)
 
-	r.table("meta").replace(r.row.without(["auth", "auth_url", "first_run_step"])).run(conn)
+	r.table("meta").replace(r.row.without(["auth", "auth_url"])).run(conn)
 	b.redirect("/")
 
+
+@app.post("/finish-setup")
+def finish_setup():
+	meta = get_twbot_meta()
+	if not meta["is_first_run"] or meta["first_run_step"] != 3:
+		return
+
+	r.table("meta").update({"is_first_run": False}).run(conn)
+	r.table("meta").replace(r.row.without("first_run_step")).run(conn)
+
+	b.redirect("/")
 
 @app.get("/login")
 @b.view("login.tpl")

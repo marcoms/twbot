@@ -65,5 +65,10 @@
 			<input name="pin" type="password" inputmode="numeric" maxlength="7" required>
 			<input type="submit">
 		</form>
-	% end
+	% elif first_run_step == 3:
+		<h3>Congratulations, you have set up twbot!</h3>
+
+		<form action="/finish-setup" method="post">
+			<input type="submit" value="Okay">
+		</form>
 </div>

@@ -11,6 +11,16 @@ html, body {
 	color: #424242;
 }
 
+body {
+	font-family: roboto, sans-serif;
+	text-rendering: optimizeSpeed;
+}
+
+input,
+button {
+	font: inherit;
+}
+
 .nav {
 	display: flex;
 	height: 48px;
@@ -96,7 +106,6 @@ button {
 
 	padding: 8px 16px;
 	background: #fff;
-	font: inherit;
 
 	cursor: pointer;
 }

@@ -14,6 +14,11 @@
 		</title>
 
 		<link rel="stylesheet" href="/static/css/style.css">
+
+		<link rel="icon" sizes="16x16" href="/static/img/twbot-icon-16.png" type="image/png">
+		<link rel="icon" sizes="32x32" href="/static/img/twbot-icon-32.png" type="image/png">
+		<link rel="icon" sizes="48x48" href="/static/img/twbot-icon-48.png" type="image/png">
+		<link rel="icon" sizes="64x64" href="/static/img/twbot-icon-64.png" type="image/png">
 	</head>
 
 	<body>

@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 
-import sys
-import rethinkdb as r
-import bottle as b
-import tweepy as t
-import time
-import bcrypt
-import pickle
-from urllib.parse import urlencode
-from uuid import uuid4 as uuid
+try:
+	import sys
+	import rethinkdb as r
+	import bottle as b
+	import tweepy as t
+	import time
+	import bcrypt
+	import pickle
+	from urllib.parse import urlencode
+	from uuid import uuid4 as uuid
+except ImportError as error:
+	print(str(error) + "\ncouldn't import all modules. Are all dependencies available?")
+	sys.exit(1)
 
 if __name__ != "__main__":
 	print("this is not a library")

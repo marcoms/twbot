@@ -3,3 +3,4 @@ bottle>=0,<1
 requests>=2,<3
 rethinkdb>=2,<3
 tweepy>=3,<4
+docopt>=0,<1

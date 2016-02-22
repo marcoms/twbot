@@ -1,0 +1,5 @@
+bcrypt>=2,<3
+bottle>=0,<1
+requests>=2,<3
+rethinkdb>=2,<3
+tweepy>=3,<4

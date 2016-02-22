@@ -1,5 +1,0 @@
-bcrypt==2.0.0
-bottle==0.12.8
-requests==2.8.1
-rethinkdb==2.1.0.post2
-tweepy==3.4.0

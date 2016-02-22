@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# © 2016 Marco Scannadinari <m@scannadinari.co.uk>
+
 try:
 	import sys
 	from urllib.parse import urlencode

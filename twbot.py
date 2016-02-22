@@ -2,16 +2,30 @@
 
 try:
 	import sys
+	from urllib.parse import urlencode
+	from uuid import uuid4 as uuid
+
 	import rethinkdb as r
 	import bottle as b
 	import tweepy as t
 	import bcrypt
+	from docopt import docopt
 	import pickle
-	from urllib.parse import urlencode
-	from uuid import uuid4 as uuid
 except ImportError as error:
 	print(str(error) + "\ncouldn't import all modules. Are all dependencies available?")
 	sys.exit(1)
+
+__doc__ = """
+twbot - Twitter Quiz Robot
+
+Usage:
+  {invok} help
+  {invok} [--port <port>] [--db-port <port>]
+
+Options:
+  -p <port>, --port <port>     Port to serve web interface at [default: 8080]
+  -d <port>, --db-port <port>  Port used to connect to database [default: 28015]
+""".format(invok=sys.argv[0]).strip()
 
 if __name__ != "__main__":
 	print("this is not a library")
@@ -102,16 +116,22 @@ META_DEFAULTS = {
 	"first_run_step": 0,
 }
 
-twbot_port = sys.argv[1] if len(sys.argv) > 1 else 8080
-rethink_driver_port = sys.argv[2] if len(sys.argv) > 2 else None
+args = docopt(__doc__, help=False)
+
+if args["help"]:
+	print(__doc__)
+	sys.exit(0)
+
+twbot_port = args["--port"]
+db_port = args["--db-port"]
 
 try:
-	if rethink_driver_port:
-		conn = r.connect(db="twbot", port=rethink_driver_port)
+	if db_port:
+		conn = r.connect(db="twbot", port=db_port)
 	else:
 		conn = r.connect(db="twbot")
 except r.errors.ReqlDriverError:
-	print("could not connect to rethinkdb server")
+	print("could not connect to database")
 	sys.exit(1)
 
 TPL_VARS = {

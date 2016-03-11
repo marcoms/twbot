@@ -1,8 +1,8 @@
 % rebase("base.tpl", title="Log in")
 
-% if b.request.GET.get("message"):
+% if req.GET.get("message"):
 	<div class="form-warning">
-		<strong>{{b.request.GET.get("message")}}</strong>
+		<strong>{{req.GET["message"]}}</strong>
 	</div>
 % end
 

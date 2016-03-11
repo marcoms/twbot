@@ -3,9 +3,9 @@
 	% if first_run_step == 0:
 		<h2>Set up your account</h2>
 
-		% if b.request.GET.get("message"):
+		% if req.GET.get("message"):
 			<div class="form-warning">
-				<strong>{{b.request.GET.get("message")}}</strong>
+				<strong>{{req.GET["message"]}}</strong>
 			</div>
 		% end
 
@@ -42,9 +42,9 @@
 			<li>Enter your consumer key and secret below</li>
 		</ol>
 
-		% if b.request.GET.get("message"):
+		% if req.GET.get("message"):
 			<div class="form-warning">
-				<strong>{{b.request.GET.get("message")}}</strong>
+				<strong>{{req.GET["message"]}}</strong>
 			</div>
 		% end
 
@@ -66,7 +66,7 @@
 			<input type="submit" value="Next">
 		</form>
 	% elif first_run_step == 3:
-		<h3>Congratulations, you have set up twbot!</h3>
+		<h3>Congratulations, you have set up twbot! You may now log in.</h3>
 
 		<form action="/finish-setup" method="post">
 			<input type="submit" value="Okay">

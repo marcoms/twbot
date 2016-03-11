@@ -19,23 +19,20 @@
 	% elif first_run_step == 1:
 		<h2>Connect to Twitter</h2>
 
-		<h3>Add your phone number</h3>
-		<h4>Go to <a target="twbot-twitter" title="Add phone number" href="https://twitter.com/settings/add_phone">twitter.com/settings/add_phone</a></h4>
+		<h3><a target="twbot-twitter" title="Add phone number" href="https://twitter.com/settings/add_phone">Add your phone number</a></h3>
 		<ul>
 			<li>You must add your phone number to your Twitter account before you can register an app</li>
 			<li>Use your real number, as Twitter will send you a confirmation text to verify the number</li>
 		</ul>
 
-		<h3>Create the Twitter app</h3>
-		<h4>Go to <a target="twbot-twitter" title="Create Twitter app" href="https://apps.twitter.com">apps.twitter.com</a></h4>
+		<h3><a target="twbot-twitter" title="Create Twitter app" href="https://apps.twitter.com">Create the Twitter app</a></h3>
 		<ul>
 			<li>By creating a Twitter application, twbot will be able to access a Twitter account and run properly</li>
 			<li>When entering the application name, enter &lsquo;twbot&rsquo; prefixed by the current Twitter account so as to prevent name clashes with other twbot users (e.g. &lsquo;@Linus__Torvalds twbot&rsquo; for user @Linus__Torvalds)</li>
 			<li>You must fill the description and website fields to proceed, however twbot ignores these fields</li>
 		</ul>
 
-		<h3>Enter your app details</h3>
-		<h4>Go to <a target="twbot-twitter" title="Retrieve your app details" href="https://apps.twitter.com">apps.twitter.com</a></h4>
+		<h3><a target="twbot-twitter" title="Retrieve your app details" href="https://apps.twitter.com">Enter your app details</a></h3>
 		<ol>
 			<li>Select your newly created app</li>
 			<li>Open the &lsquo;Keys and Access Tokens&rsquo; tab</li>
@@ -56,9 +53,9 @@
 			<input type="submit" value="Next">
 		</form>
 	% elif first_run_step == 2:
-		<h3>Go to <a target="twbot-twitter" title="Authorization URL" href="{{auth_url}}">{{auth_url}}</a></h3>
+		<h3><a target="twbot-twitter" title="Authorization URL" href="{{auth_url}}">Authorise twbot</a></h3>
 
-		<p>Enter the PIN you are given below</p>
+		<p>Finally, please enter the PIN you are given</p>
 
 		<form id="form-register-pin" action="/register-pin" method="post" autocomplete="off">
 			<label for="reg-pin">PIN:</label>

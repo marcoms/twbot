@@ -472,6 +472,7 @@ def logout():
 # TODO: require admin authentication
 @app.get("/achtung-reset")
 def reset_db():
+	print("resetting dabatase!")
 	init_db(conn, reset=True)
 	b.redirect("/")
 

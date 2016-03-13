@@ -9,8 +9,11 @@ from urllib.parse import urlencode
 from uuid import uuid4 as uuid
 
 try:
+	# frequently used modules aliased for convenience
+
 	import bottle as b
 	import tweepy as t
+
 	import bcrypt
 	from docopt import docopt
 except ImportError as error:
@@ -303,6 +306,36 @@ app = b.Bottle()
 ################################################################################
 # ROUTES BEGIN #################################################################
 
+"""
+The "@" syntax that follows is known as a decorator, and is equivelant but more
+concise way of passing a function to another function. This works because a
+function is also an object in Python.
+
+e.g.:
+
+	@fn_x
+	def fn_y():
+		pass
+
+is equivelant to:
+
+	def fn_y():
+		pass
+
+	fn_y = fn_x(fn_y)
+
+With the @(Bottle instance).get decorator, it registers the passed function to
+be ran whenever the route passed to the get() function is matched by a GET
+request to the server.
+@(Bottle instance).post does the same, however it responds to POST requests
+instead of GET requests.
+
+The passed function to either of these decorators may either return the response
+body (sent from the server to the client), or be passed to the @b.view
+decorator, that gets passed a name of a template in the "views" directory to
+return as the response body.
+"""
+
 @app.get("/static/<filepath:path>")
 def static_file(filepath):
 	# correctly handle static file requests
@@ -331,6 +364,7 @@ def register():
 	elif len(password) < 5:
 		b.redirect("/?" + urlencode({"message": "Password must be at least five characters"}))
 
+	# generate the password hash with the generated salt
 	hashed_password = bcrypt.hashpw(password.encode(), salt=bcrypt.gensalt(SALT_ROUNDS))
 
 	# commit admin details and proceed to next step
@@ -355,7 +389,9 @@ def register_tokens():
 	api_secret = req.POST.get("api-secret")
 
 	auth = t.OAuthHandler(api_key, api_secret)
+
 	try:
+		# obtain a URL for the user to authorise twbot at
 		auth_url = auth.get_authorization_url()
 	except t.TweepError:
 		print("failed to get autorization url")
@@ -372,7 +408,11 @@ def register_tokens():
 	""", (
 		api_key,
 		api_secret,
+
+		# we have to store a "picked" (serialised to a string) representation of
+		# this object since each one is created as unique
 		pickle.dumps(auth),
+
 		auth_url,
 	))
 
@@ -390,6 +430,7 @@ def register_pin():
 	pin = req.POST.get("pin")
 
 	auth = pickle.loads(meta["auth"])
+
 	access_key, access_secret = auth.get_access_token(pin)
 	conn.execute("""
 		UPDATE meta SET
@@ -414,7 +455,9 @@ def finish_setup():
 	if meta["first_run_step"] != 3:
 		return
 
+	# -1 means that the first run phase has been completed
 	conn.execute("UPDATE meta SET first_run_step = -1;")
+
 	conn.commit()
 
 	b.redirect("/")
@@ -440,7 +483,11 @@ def login_post():
 		valid = False
 
 	if valid:
+		# generate a UUID (universally unique identifier). Each one is unique
+		# except in exceptional circumstances, and so it will be infeasible for
+		# someone to forge one that authenticates them into the system
 		session = str(uuid())
+
 		resp.set_cookie("session", session, httponly=True)
 		conn.execute("UPDATE meta SET session = ?;", (session,))
 		conn.commit()
@@ -462,8 +509,11 @@ def logout():
 		b.redirect("/")
 		return
 
+	# remove the session UUID from the client and server
+
 	resp.delete_cookie("session")
 	conn.execute("UPDATE meta SET session = NULL;")
+
 	conn.commit()
 
 	b.redirect("/")
@@ -479,4 +529,5 @@ def reset_db():
 # ROUTES END ###################################################################
 ################################################################################
 
+# start the twbot server
 app.run(host="0.0.0.0", port=twbot_port, reloader=True, debug=True)

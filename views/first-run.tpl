@@ -32,7 +32,7 @@
 			<li>You must fill the description and website fields to proceed, however twbot ignores these fields</li>
 		</ul>
 
-		<h3><a target="twbot-twitter" title="Retrieve your app details" href="https://apps.twitter.com">Enter your app details</a></h3>
+		<h3><a target="twbot-twitter" title="Retrieve your app details" href="https://apps.twitter.com">Retrieve your app details</a></h3>
 		<ol>
 			<li>Select your newly created app</li>
 			<li>Open the &lsquo;Keys and Access Tokens&rsquo; tab</li>

@@ -34,7 +34,7 @@
 				<a class="{{(title == "About" and "current-link") or ""}}" href="/about">About</a>
 				<div class="flex-spacer"></div>
 				% if is_logged_in:
-					<a class="{{(title == "Administration" and "current-link" or "")}}" href="/admin">{{username}}</a>
+					<a class="{{(title == "Admin" and "current-link" or "")}}" href="/admin">Admin</a>
 				% else:
 					<a class="{{(title == "Log in" and "current-link") or ""}}" href="/login">Log in</a>
 				% end

@@ -1,1 +1,1 @@
-% rebase("base.tpl", title="Home")
+% rebase("base.tpl", title="Leaderboard")

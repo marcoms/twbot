@@ -30,8 +30,8 @@
 			<nav class="nav">
 				<header>twbot</header>
 
-				<a class="{{(title == "Home" and "current-link") or ""}}" href="/">Home</a>
-				<a class="{{(title == "About" and "current-link") or ""}}" href="/about">About</a>
+				<a class="{{(title == "Leaderboard" and "current-link") or ""}}" href="/">Leaderboard</a>
+				<a class="{{(title == "Users" and "current-link") or ""}}" href="/users">Users</a>
 				<div class="flex-spacer"></div>
 				% if is_logged_in:
 					<a class="{{(title == "Admin" and "current-link" or "")}}" href="/admin">Admin</a>

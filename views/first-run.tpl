@@ -28,7 +28,7 @@
 		<h3><a target="twbot-twitter" title="Create Twitter app" href="https://apps.twitter.com">Create the Twitter app</a></h3>
 		<ul>
 			<li>By creating a Twitter application, twbot will be able to access a Twitter account and run properly</li>
-			<li>When entering the application name, enter &lsquo;twbot&rsquo; prefixed by the current Twitter account so as to prevent name clashes with other twbot users (e.g. &lsquo;@Linus__Torvalds twbot&rsquo; for user @Linus__Torvalds)</li>
+			<li>When entering the application name, enter &lsquo;twbot&rsquo; prefixed by the current Twitter account so as to prevent name clashes with other twbot users (e.g. &lsquo;@peter_banterson twbot&rsquo; for user @peter_banterson)</li>
 			<li>You must fill the description and website fields to proceed, however twbot ignores these fields</li>
 		</ul>
 

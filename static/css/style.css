@@ -8,12 +8,21 @@ html, body {
 
 	height: 100%;
 
-	color: #424242;
+	color: #212121;
 }
 
 body {
 	font-family: roboto, sans-serif;
 	text-rendering: optimizeSpeed;
+}
+
+h1:first-child,
+h2:first-child,
+h3:first-child,
+h4:first-child,
+h5:first-child,
+p:first-child {
+	margin-top: 0;
 }
 
 input,
@@ -22,18 +31,24 @@ button {
 }
 
 .nav {
+	background: #eee;
+	border-bottom: 1px solid #212121;
+}
+
+.nav-contents {
 	display: flex;
 	height: 48px;
+	max-width: 960px;
+	margin: 0 auto;
 
-	background: #eee;
 	align-items: center;
 }
 
-.nav > header {
+.nav-contents > header {
 	padding: 0 16px;
 }
 
-.nav > a {
+.nav-contents > a {
 	height: 100%;
 
 	padding: 0 16px;
@@ -43,34 +58,38 @@ button {
 	text-decoration: none;
 }
 
-.nav > a:hover {
+.nav-contents > a:hover {
 	background: #ddd;
 }
 
-.nav > .current-link {
+.nav-contents > .current-link {
 	text-decoration: none;
 	color: #eee;
-	background: #424242;
+	background: #212121;
 
 	pointer-events: none;
 	cursor: default;
 }
 
-.nav > header {
+.nav-contents > header {
 	font-size: 1.5em;
 }
 
-.flex-spacer {
+.spacer {
 	flex: 1;
 }
 
 .content {
 	padding: 16px;
+	max-width: 960px;
+	margin: 0 auto;
 }
 
 .first-run {
 	width: 100%;
 	overflow: auto;
+
+	padding-top: 64px;
 
 	text-align: center;
 }
@@ -83,16 +102,42 @@ button {
 }
 
 input[type="text"],
+textarea,
 input[type="username"],
 input[type="password"] {
 	display: block;
 
 	outline: 0;
-	border: 2px solid #424242;
+	border: 2px solid #212121;
 
 	border-radius: 4px;
 	padding: 8px;
 	background: transparent;
+}
+
+textarea {
+	font: inherit;
+}
+
+input[type="checkbox"] {
+	cursor: pointer;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	border-radius: 4px;
+	border: 2px solid #212121;
+	margin: 0;
+	width: 24px;
+	height: 24px;
+	vertical-align: middle;
+}
+
+input[type="checkbox"]:checked {
+	background: #212121;
+	box-shadow: inset 4px 0 #fff, inset 0 4px #fff, inset 0 -4px #fff, inset -4px 0 #fff;
+}
+
+input[type="checkbox"]:active {
+	background: #888;
 }
 
 input[type="submit"],
@@ -101,7 +146,7 @@ button {
 	margin: 16px 0;
 
 	outline: 0;
-	border: 2px solid #424242;
+	border: 2px solid #212121;
 	border-radius: 4px;
 
 	padding: 8px 16px;
@@ -112,13 +157,18 @@ button {
 
 input[type="submit"]:active,
 button:active {
-	background: #424242;
+	background: #212121;
 	color: #fff;
 }
 
 label {
 	display: block;
 	margin: 16px 0;
+	cursor: pointer;
+}
+
+.label-inline {
+	display: inline-block;
 }
 
 .first-run input {
@@ -136,8 +186,57 @@ label {
 	margin: 16px 0;
 }
 
-.form-warning {
+.warning {
 	padding: 16px;
 	background: orange;
 	border-radius: 4px;
+	display: flex;
+	flex-direction: column;
+}
+
+.area {
+	border: 2px solid #212121;
+	border-radius: 8px;
+	padding: 8px;
+}
+
+.multiple-choice-answers {
+	display: flex;
+	transition: opacity 128ms linear;
+}
+
+.multiple-choice-answers > div {
+	margin: 0 16px;
+}
+
+.question-is-multiple-choice:not(:checked) + label + .multiple-choice-answers {
+	opacity: 0.25;
+	pointer-events: none;
+}
+
+details > summary {
+	cursor: pointer;
+}
+
+.list > *{
+	padding: 16px 0;
+}
+
+.list > *:not(:last-of-type) {
+	border-bottom: 2px solid #ccc;
+}
+
+small {
+	opacity: 0.75;
+}
+
+.list-mini > * {
+	display: flex;
+	align-items: center;
+	min-height: 3em;
+	padding: 0 1em;
+}
+
+.list-mini > *:nth-child(even) {
+	background: #eee;
 }

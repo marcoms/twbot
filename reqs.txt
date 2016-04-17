@@ -3,3 +3,5 @@ bottle>=0,<1
 requests>=2,<3
 tweepy>=3,<4
 docopt>=0,<1
+iso8601>=0,<1
+delorean>=0,<1

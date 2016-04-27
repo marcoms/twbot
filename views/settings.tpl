@@ -37,7 +37,7 @@
 		<input type="submit" value="Remove all tweets and direct messages">
 	</form>
 
-	<form action="/reset" mothod="post">
+	<form action="/reset" method="post">
 		<input type="submit" value="Reset all data">
 	</form>
 <%

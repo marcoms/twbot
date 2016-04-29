@@ -395,6 +395,9 @@ def register():
 
 @app.post("/register-tokens")
 def register_tokens():
+	# used to update the API instance in this context
+	global api
+
 	meta = get_twbot_meta(c)
 	if meta["first_run_step"] != 1:
 		return
@@ -412,13 +415,15 @@ def register_tokens():
 	auth = t.OAuthHandler(api_key, api_secret)
 	auth.set_access_token(access_key, access_secret)
 
-	api = t.API(auth)
+	test_api = t.API(auth)
 
 	try:
-		api.me()
+		test_api.me()
 	except t.TweepError:
 		print("couldn't use twitter api")
 		b.redirect("/?" + urlencode({"message": "One or more fields incorrect"}))
+
+	api = test_api
 
 	c.execute("""
 		UPDATE meta SET
@@ -445,8 +450,8 @@ def finish_setup():
 	if meta["first_run_step"] != 2:
 		return
 
-	finish_time = dmc.utcnow().shift(UK_TZ)
-	api.update_profile(description="Twitter Quiz Robot since " + finish_time.format_datetime())
+	finish_time = dmc.utcnow().shift(UK_TZ).format_datetime()
+	api.update_profile(description="Twitter Quiz Robot since " + finish_time)
 	api.update_profile_image("static/img/twbot.png")
 
 	# -1 means that the first run phase has been completed
@@ -886,6 +891,7 @@ def do_work():
 						status="@" + api.me().screen_name + " " + helper_text,
 						in_reply_to_status_id=tweet.id,
 					)
+
 			# MENTIONS
 
 			## statuses/mentions_timeline ##
